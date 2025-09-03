@@ -26,6 +26,30 @@ The final embeddings are designed for production deployment in a **Neo4j** graph
 -   **High-Speed Vector Search:** Employs `Facebook AI Similarity Search (FAISS)` to build an efficient index for near-instantaneous retrieval of semantically similar items.
 -   **Production-Ready Architecture:** The entire workflow is designed to output final embeddings that can be easily loaded into a **Neo4j** database, allowing for scalable, real-time recommendation queries using the Graph Data Science library.
 
+## 📊 Dataset
+
+This project utilizes a subset of the data from the **[H&M Personalized Fashion Recommendations](https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/data)** competition hosted on Kaggle.
+
+### Subsetting Strategy
+
+The complete dataset is extremely large, with the `transactions_train.csv` file alone containing over 31 million records. To facilitate efficient model development, training, and demonstration within the constraints of a standard computing environment (like Kaggle notebooks), a representative subset of the data was created.
+Also, some columns were dropped as they had no significant importance, and missing data was imputed.
+
+The subsetting process is as follows:
+
+1.  **Time-based Filtering**: Only transactions from the most recent **two weeks (`14 days`)** of the dataset are selected. This ensures the model is trained on recent, relevant user behavior and current fashion trends.
+2.  **Entity Filtering**: The `articles` and `customers` datasets are then filtered to include only those entities that appear in the time-filtered transaction sample.
+
+This approach creates a smaller, yet dense and highly relevant graph for training the GNN, making the computationally intensive task of learning graph embeddings feasible while maintaining the integrity of recent user-product interactions.
+
+### Source Files Used
+
+The following files from the original competition dataset were used as the foundation for this project:
+
+-   `articles.csv`: Detailed metadata for each product, including name, product group, color, etc.
+-   `customers.csv`: Anonymized metadata for each customer, such as age and status.
+-   `transactions_train.csv`: The complete user purchase history, linking customers to the articles they bought.
+
 ## 🚀 Project Workflow & Architecture
 
 The project is executed in three main stages:
