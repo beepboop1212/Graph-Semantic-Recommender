@@ -50,6 +50,42 @@ The following files from the original competition dataset were used as the found
 -   `customers.csv`: Anonymized metadata for each customer, such as age and status.
 -   `transactions_train.csv`: The complete user purchase history, linking customers to the articles they bought.
 
+## 🔬 GNN Explanation in Action
+
+The key differentiator of this project is its ability to provide transparency. After generating a recommendation, the system can explain the reasoning behind it by attributing the prediction score back to the input graph.
+
+Here's a real example from the system:
+
+**1. A User's Recent Purchase History:**
+| prod_name | product_group_name | colour_group_name |
+| :--- | :--- | :--- |
+| Jen Bermuda denim shorts | Garment Lower body | Light Blue |
+| HEAVEN shaping HW tight | Garment Lower body | Dark Grey |
+| Norway hood jacket | Garment Upper body | Green |
+
+**2. The System's Top Recommendation:**
+`Pink HW barrel` (a pair of trousers)
+
+**3. The Explanation:**
+The system explains this recommendation by identifying the most influential factors from the user's history:
+Top Influential Factors (by attribution score):
+▸ (0.0451) Your previous purchase of: 'Jen Bermuda denim shorts'
+▸ (0.0128) The attribute 'Garment Lower body' from your purchase of 'Jen Bermuda denim shorts'
+▸ (0.0097) Your previous purchase of: 'HEAVEN shaping HW tight'
+▸ (0.0053) The attribute 'Light Blue' from your purchase of 'Jen Bermuda denim shorts'
+
+This output clearly shows the recommendation was driven by the user's affinity for "Garment Lower body" items, particularly their previous purchase of denim shorts.
+
+## 📊 Dataset
+
+This project utilizes a subset of the data from the **[H&M Personalized Fashion Recommendations](https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/data)** competition.
+
+To make development and training feasible, a representative subset was created by:
+1.  **Time-based Filtering**: Selecting transactions from the most recent **two weeks (`14 days`)**.
+2.  **Entity Filtering**: Filtering the `articles` and `customers` datasets to include only those present in the time-filtered transaction sample.
+
+This creates a dense and highly relevant graph for training the GNN while maintaining the integrity of recent user-product interactions.
+
 ## 🚀 Project Workflow & Architecture
 
 The project is executed in three main stages:
@@ -67,6 +103,7 @@ The project is executed in three main stages:
     *   The trained GNN model is used to generate final embeddings for all customers and articles in the graph.
     *   These embeddings, along with their ID mappings, are saved to disk (`.npy` and `.json` files).
     *   The conceptual final step involves loading this graph structure and the learned embeddings into a Neo4j database to serve real-time API requests for recommendations.
+    *  **Explanation:** The `CaptumExplainer` is used to analyze a specific recommendation, attributing the prediction score back to influential edges in the user's historical subgraph.
 
 ## 🛠️ Getting Started
 
